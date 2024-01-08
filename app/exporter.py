@@ -12,12 +12,10 @@ import logging
 
 
 class MetricExporter:
-    def __init__(self, polling_interval_seconds, metric_name, aws_access_key, aws_access_secret, aws_assumed_role_name, group_by, targets):
+    def __init__(self, polling_interval_seconds, metric_name, aws_assumed_role_name, group_by, targets):
         self.polling_interval_seconds = polling_interval_seconds
         self.metric_name = metric_name
         self.targets = targets
-        self.aws_access_key = aws_access_key
-        self.aws_access_secret = aws_access_secret
         self.aws_assumed_role_name = aws_assumed_role_name
         self.group_by = group_by
         # we have verified that there is at least one target
@@ -45,8 +43,6 @@ class MetricExporter:
     def get_aws_account_session(self, account_id):
         sts_client = boto3.client(
             "sts",
-            aws_access_key_id=self.aws_access_key,
-            aws_secret_access_key=self.aws_access_secret,
         )
 
         assumed_role_object = sts_client.assume_role(
@@ -92,9 +88,6 @@ class MetricExporter:
 
         aws_client = boto3.client(
             "ce",
-            aws_access_key_id=aws_credentials["AccessKeyId"],
-            aws_secret_access_key=aws_credentials["SecretAccessKey"],
-            aws_session_token=aws_credentials["SessionToken"],
             region_name="us-east-1"
         )
         cost_response = self.query_aws_cost_explorer(
