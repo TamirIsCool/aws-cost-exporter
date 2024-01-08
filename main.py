@@ -56,8 +56,6 @@ def main(config):
     app_metrics = MetricExporter(
         polling_interval_seconds=config["polling_interval_seconds"],
         metric_name=config["metric_name"],
-        aws_access_key=config["aws_access_key"],
-        aws_access_secret=config["aws_access_secret"],
         aws_assumed_role_name=config["aws_assumed_role_name"],
         group_by=config["group_by"],
         targets=config["target_aws_accounts"]
