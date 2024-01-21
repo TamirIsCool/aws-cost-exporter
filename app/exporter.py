@@ -45,13 +45,13 @@ class MetricExporter:
         )
 
     def query_aws_cost_explorer(self, aws_client, group_by):
-        end_date = datetime.today()
-        start_date = end_date - relativedelta(days=1)
+        end_date = datetime.today() - relativedelta(days=1)  # Set end_date to yesterday
+        start_date = end_date - relativedelta(days=1)  # Set start_date to two days ago
         groups = list()
         if group_by["enabled"]:
             for group in group_by["groups"]:
                 groups.append({"Type": group["type"], "Key": group["key"]})
-
+    
         return aws_client.get_cost_and_usage(
             TimePeriod={"Start": start_date.strftime("%Y-%m-%d"), "End": end_date.strftime("%Y-%m-%d")},
             Filter={"Dimensions": {"Key": "RECORD_TYPE", "Values": ["Usage"]}},
@@ -59,6 +59,7 @@ class MetricExporter:
             Metrics=["UnblendedCost"],
             GroupBy=groups
         )["ResultsByTime"]
+
 
     def fetch(self, aws_account):
         session = self.get_aws_account_session(aws_account["Publisher"])
